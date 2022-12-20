@@ -121,8 +121,4 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
 
         return json.decodeFromString(request.body)
     }
-
-    override fun invokeAutoPopup(position: PsiElement, typeChar: Char): Boolean {
-        return super.invokeAutoPopup(position, typeChar)
-    }
 }
