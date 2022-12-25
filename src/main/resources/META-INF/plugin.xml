@@ -19,5 +19,14 @@
                 order="first, before completionAutoPopup"
                 id="com.mamiksik.parrot.autocompletion.AutoPopupHandler"
         />
+
+        <!-- the persistent state configurable ui -->
+        <applicationConfigurable instance="com.mamiksik.parrot.config.PluginSettingsPersistentStateConfigurable"
+                                 id="mamiksik.Parrot" displayName="Parrot Configuration"/>
+
+        <!-- the persistent state service-->
+        <applicationService
+                serviceImplementation="com.mamiksik.parrot.config.PluginSettingsStateComponent"
+        />
     </extensions>
 </idea-plugin>
