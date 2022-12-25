@@ -3,6 +3,7 @@ package com.mamiksik.parrot.autocompletion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.AutoCompletionPolicy
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.application.ex.ApplicationUtil.runWithCheckCanceled
@@ -55,15 +56,16 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
 
         val lookupElements = patchStrings
             .flatMap { predict(commitMessage + it) }
-            .sortedBy { it.score }
             .map {
-                var prediction = if(partialCommitMessage.isEmpty()) {it.prediction.capitalize()} else {it.prediction}
-                prediction = prediction.trim()
-
-                LookupElementBuilder
-                    .create(prediction)
+                val prediction = if(partialCommitMessage.isEmpty()) {it.prediction.capitalize()} else {it.prediction}
+                val element = LookupElementBuilder
+                    .create(prediction.trim())
                     .withIcon(icon)
+                    .withCaseSensitivity(false)
+                    .withTypeText("""${"%.2f".format(it.score * 100)}%""")
                     .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
+
+                PrioritizedLookupElement.withPriority(element, it.score)
             }
 
         result.addAllElements(lookupElements)
