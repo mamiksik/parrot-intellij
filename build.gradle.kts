@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("org.jetbrains.intellij") version "1.7.0"
+    id("co.uzzu.dotenv.gradle") version "2.0.0"
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.serialization") version "1.7.20"
 }
@@ -15,8 +16,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
-group = "com.example.mamiksik"
-version = "1.0-SNAPSHOT"
+group = "com.mamiksik"
+version = "1.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -55,9 +56,9 @@ tasks {
     }
 
     signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        certificateChain.set(env.CERTIFICATE_CHAIN.value)
+        privateKey.set(env.PRIVATE_KEY.value)
+        password.set(env.PRIVATE_KEY_PASSWORD.value)
     }
 
     publishPlugin {
