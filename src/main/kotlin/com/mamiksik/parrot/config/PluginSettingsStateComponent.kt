@@ -8,20 +8,20 @@ import com.intellij.openapi.components.Storage
     name = "PluginSettingsComponent",
     storages = [Storage("parrot-plugin-settings.xml")]
 )
-open class PluginSettingsStateComponent: PersistentStateComponent<PluginState> {
+open class PluginSettingsStateComponent: PersistentStateComponent<PluginSettingsState> {
 
     companion object {
         val instance: PluginSettingsStateComponent
             get() = ServiceManager.getService(PluginSettingsStateComponent::class.java)
     }
 
-    private var state = PluginState()
+    private var state = PluginSettingsState()
 
-    override fun getState(): PluginState {
+    override fun getState(): PluginSettingsState {
         return state
     }
 
-    override fun loadState(state: PluginState) {
+    override fun loadState(state: PluginSettingsState) {
         this.state = state
     }
 }
