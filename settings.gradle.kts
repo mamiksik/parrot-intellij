@@ -1,1 +1,1 @@
-rootProject.name = "InteliJPlugin"
+rootProject.name = "Parrot"

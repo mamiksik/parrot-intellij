@@ -1,4 +1,4 @@
-package com.example.mamiksik.intelijplugin
+package com.mamiksik.parrot.autocompletion
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

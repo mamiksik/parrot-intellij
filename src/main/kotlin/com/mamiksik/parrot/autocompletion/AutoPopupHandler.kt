@@ -1,4 +1,4 @@
-package com.example.mamiksik.intelijplugin
+package com.mamiksik.parrot.autocompletion
 
 import com.intellij.codeInsight.AutoPopupController
 import com.intellij.codeInsight.completion.CompletionType

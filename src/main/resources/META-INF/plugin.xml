@@ -1,10 +1,9 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.example.mamiksik.InteliJPlugin</id>
-    <name>InteliJPlugin</name>
-    <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+    <id>com.mamiksik.parrot</id>
+    <name>Parrot - AI Commit Message Autocomplete</name>
+    <vendor email="mamiksik@gmail.com">Martin Miksik</vendor>
 
-    <description><![CDATA[Enter short description for your plugin here.<br><em>most HTML tags may be used</em>]]></description>
+    <description><![CDATA[Parrot autocompletes your commit message based on changes you made (supports Java, Python, Go, PHP)]]></description>
     <depends>com.intellij.modules.platform</depends>
     <depends>Git4Idea</depends>
 
@@ -12,22 +11,13 @@
         <completion.contributor
                 order="first, before commitCompletion"
                 language="TEXT"
-                implementationClass="com.example.mamiksik.intelijplugin.CommitMessageCompletionContributor"
+                implementationClass="com.mamiksik.parrot.autocompletion.CommitMessageCompletionContributor"
         />
 
         <typedHandler
-                implementation="com.example.mamiksik.intelijplugin.AutoPopupHandler"
+                implementation="com.mamiksik.parrot.autocompletion.AutoPopupHandler"
                 order="first, before completionAutoPopup"
-                id="com.example.mamiksik.intelijplugin.AutoPopupHandler"
+                id="com.mamiksik.parrot.autocompletion.AutoPopupHandler"
         />
     </extensions>
-
-    <actions>
-        <action id="Commit.Button" class="com.example.mamiksik.intelijplugin.GenerateCommitMessageAction"
-                text="Create commit message"
-                description="Create commit message"
-                icon="/icons/load.png">
-            <add-to-group group-id="Vcs.MessageActionGroup" anchor="first"/>
-        </action>
-    </actions>
 </idea-plugin>

@@ -1,4 +1,4 @@
-package com.example.mamiksik.intelijplugin
+package com.mamiksik.parrot.autocompletion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
@@ -17,7 +17,6 @@ import com.intellij.openapi.vcs.changes.ChangeListManager
 import com.intellij.openapi.vcs.ui.CommitMessage
 import com.intellij.project.stateStore
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiElement
 import fuel.Fuel
 import fuel.post
 import kotlinx.coroutines.runBlocking

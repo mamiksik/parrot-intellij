@@ -1,8 +1,6 @@
 plugins {
     id("java")
     id("org.jetbrains.intellij") version "1.7.0"
-//    id("org.jetbrains.kotlin.jvm") version "1.7.20"
-
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.serialization") version "1.7.20"
 }
@@ -14,6 +12,7 @@ dependencies {
     implementation(group = "com.github.kittinunf.fuel", name = "fuel", version = "main-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
 group = "com.example.mamiksik"
