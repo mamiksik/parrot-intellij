@@ -17,6 +17,7 @@ import com.intellij.openapi.vcs.changes.ChangeListManager
 import com.intellij.openapi.vcs.ui.CommitMessage
 import com.intellij.project.stateStore
 import com.intellij.psi.PsiDocumentManager
+import com.mamiksik.parrot.config.PluginSettingsStateComponent
 import fuel.Fuel
 import fuel.post
 import kotlinx.coroutines.runBlocking
@@ -29,7 +30,6 @@ import io.github.cdimascio.dotenv.dotenv
 
 internal class CommitMessageCompletionContributor: CompletionContributor() {
     companion object {
-        private val dotenv = dotenv()
         private val icon = IconLoader.findIcon("/icons/autocomplet.svg")!!
     }
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
@@ -103,12 +103,11 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
 
     private fun predict(patch: String): List<Prediction> {
         val json = Json { ignoreUnknownKeys = true }
-        val apiUrl = "https://api-inference.huggingface.co/models/mamiksik/CommitPredictor"
-        val token = dotenv["HF_API_TOKEN"]
+        val apiUrl = PluginSettingsStateComponent.instance.state.inferenceApiUrl
+        val token = PluginSettingsStateComponent.instance.state.inferenceApiToken
 
         val payload = mapOf("inputs" to patch)
         val headers = mapOf("Authorization" to "Bearer $token")
-
 
         val request = runBlocking {
             Fuel.post(url=apiUrl, body=json.encodeToString(payload), headers=headers)
