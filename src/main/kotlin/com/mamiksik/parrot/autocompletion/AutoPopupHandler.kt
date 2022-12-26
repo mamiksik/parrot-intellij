@@ -11,9 +11,8 @@ import com.intellij.psi.PsiFile
 
 internal class AutoPopupHandler: TypedHandlerDelegate() {
     override fun checkAutoPopup(charTyped: Char, project: Project, editor: Editor, file: PsiFile): Result {
-        if ((editor as EditorImpl).placeholder.equals("Commit Message")) {
-
-            AutoPopupController.getInstance(project).scheduleAutoPopup(editor, CompletionType.BASIC) { true }
+        if ((editor as? EditorImpl)?.placeholder?.equals("Commit Message") == true) {
+            AutoPopupController.getInstance(project).scheduleAutoPopup(editor)
             return Result.STOP
         }
 
