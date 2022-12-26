@@ -7,12 +7,9 @@ plugins {
 }
 
 dependencies {
-    api("io.kinference", "inference-core", "0.2.3")
     implementation(kotlin("stdlib-common"))
-    implementation("io.kinference:inference-core:0.1.13")
     implementation(group = "com.github.kittinunf.fuel", name = "fuel", version = "main-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 

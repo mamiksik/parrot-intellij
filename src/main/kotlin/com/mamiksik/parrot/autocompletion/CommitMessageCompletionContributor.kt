@@ -29,8 +29,6 @@ import kotlinx.serialization.decodeFromString
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
-import io.github.cdimascio.dotenv.dotenv
-import java.util.*
 
 
 internal class CommitMessageCompletionContributor: CompletionContributor() {
