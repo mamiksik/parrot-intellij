@@ -18,6 +18,7 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.vcs.changes.ChangeListChange
 import com.intellij.openapi.vcs.changes.ChangeListManager
 import com.intellij.openapi.vcs.ui.CommitMessage
+import com.intellij.patterns.StandardPatterns
 import com.intellij.project.stateStore
 import com.intellij.psi.PsiDocumentManager
 import com.mamiksik.parrot.config.PluginSettingsStateComponent
@@ -61,7 +62,11 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
         val lookupElements = patchStrings
             .flatMap { predict(commitMessage + it, project) }
             .map {
-                val prediction = if(partialCommitMessage.isEmpty()) {it.prediction.capitalize()} else {it.prediction}
+                // Capitalize first letter if the commit message is empty
+                val prediction = if(partialCommitMessage.isEmpty()) {
+                    it.prediction.replaceFirstChar { x -> x.uppercaseChar() }
+                } else {it.prediction}
+
                 val element = LookupElementBuilder
                     .create(prediction.trim())
                     .withIcon(icon)
