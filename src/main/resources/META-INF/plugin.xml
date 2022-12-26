@@ -28,5 +28,7 @@
         <applicationService
                 serviceImplementation="com.mamiksik.parrot.config.PluginSettingsStateComponent"
         />
+
+        <notificationGroup id="mamiksik.parrot.notification" displayType="BALLOON"/>
     </extensions>
 </idea-plugin>

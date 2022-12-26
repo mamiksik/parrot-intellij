@@ -6,6 +6,8 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.AutoCompletionPolicy
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ex.ApplicationUtil.runWithCheckCanceled
 import com.intellij.openapi.diff.impl.patch.IdeaTextPatchBuilder
 import com.intellij.openapi.diff.impl.patch.PatchLine
@@ -27,10 +29,12 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 import io.github.cdimascio.dotenv.dotenv
+import java.util.*
 
 
 internal class CommitMessageCompletionContributor: CompletionContributor() {
     companion object {
+        private val notificationManager = NotificationGroupManager.getInstance().getNotificationGroup("mamiksik.parrot.notification");
         private val icon = IconLoader.findIcon("/icons/autocomplet.svg")!!
     }
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
@@ -55,7 +59,7 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
         val commitMessage = getMaskedMessage(partialCommitMessage)
 
         val lookupElements = patchStrings
-            .flatMap { predict(commitMessage + it) }
+            .flatMap { predict(commitMessage + it, project) }
             .map {
                 val prediction = if(partialCommitMessage.isEmpty()) {it.prediction.capitalize()} else {it.prediction}
                 val element = LookupElementBuilder
@@ -103,7 +107,7 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
         }
     }
 
-    private fun predict(patch: String): List<Prediction> {
+    private fun predict(patch: String, project: Project): List<Prediction> {
         val json = Json { ignoreUnknownKeys = true }
         val apiUrl = PluginSettingsStateComponent.instance.state.inferenceApiUrl
         val token = PluginSettingsStateComponent.instance.state.inferenceApiToken
@@ -112,13 +116,25 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
         val headers = mapOf("Authorization" to "Bearer $token")
 
         val request = runBlocking {
-            Fuel.post(url=apiUrl, body=json.encodeToString(payload), headers=headers)
-        }
+            try {
+                return@runBlocking Fuel.post(url = apiUrl, body = json.encodeToString(payload), headers = headers)
+            } catch (e: Exception) {
+                createErrorNotification(e.message ?: "", project)
+                return@runBlocking null
+            }
+        } ?: return emptyList()
 
         if (request.statusCode != 200) {
+            createErrorNotification("[${request.statusCode}]\n" + request.body, project)
             return emptyList()
         }
 
         return json.decodeFromString(request.body)
+    }
+
+    private fun createErrorNotification(message: String, project: Project) {
+        notificationManager.createNotification(
+            "Error while sending request to Parrot API", message , NotificationType.ERROR
+        ).notify(project)
     }
 }
