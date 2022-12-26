@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="images/logo.png" width="150">
+</p>
+
 ### Parrot - AI Autocomplete for Commit Messages
 Welcome to Parrot, the AI autocomplete plugin for commit messages! With Parrot, you can save time and improve the quality of your commit messages by using machine learning to generate suggestions for what to include in your message.
 
