@@ -46,8 +46,9 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
         if (document?.getUserData(CommitMessage.DATA_KEY) == null) return
 
 
-//        result.restartCompletionOnAnyPrefixChange()
-//        result.restartCompletionWhenNothingMatches()
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(1)) // Restart when message is empty
+        result.restartCompletionOnPrefixChange(StandardPatterns.string().endsWith(" ")) // Restart when message ends with space
+        result.restartCompletionWhenNothingMatches() // Restart when nothing matches
 
         // Prevent UI freeze
         runWithCheckCanceled({
