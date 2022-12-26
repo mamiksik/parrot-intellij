@@ -26,8 +26,8 @@ class PluginSettingsPersistentStateConfigurable: Configurable, Configurable.NoSc
 
     override fun createComponent(): JComponent {
         val formPanel = FormBuilder.createFormBuilder()
-            .addLabeledComponent("Inference Api URL", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(inferenceApiUrlField) })
-            .addLabeledComponent("Inference Api Token", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(inferenceApiTokenField) })
+            .addLabeledComponent("Inference api URL", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(inferenceApiUrlField) })
+            .addLabeledComponent("Inference api token", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(inferenceApiTokenField) })
             .panel
 
         return JPanel(BorderLayout()).also { it.add(formPanel, BorderLayout.NORTH) }
