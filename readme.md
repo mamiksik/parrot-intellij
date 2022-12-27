@@ -4,11 +4,13 @@
 </p>
 
 ### Parrot - AI Autocomplete for Commit Messages
+➡️ [Get it on Jetbrains Marketplace](https://plugins.jetbrains.com/plugin/20738-parrot--ai-commit-message-autocomplete)
+
 Welcome to Parrot, the AI autocomplete plugin for commit messages! With Parrot, you can save time and improve the quality of your commit messages by using machine learning to generate suggestions for what to include in your message.
 
 ![](images/autocomplet-preview.png)
 
-#### Also see:
+#### See also:
  - 🤖 [Parrot CodeBerta Model](https://huggingface.co/mamiksik/CommitPredictor)
  - 💿 [Parrot Dataset](https://huggingface.co/datasets/mamiksik/CommitDiffs)
  - 🚀 [Parrot Inference Server](https://github.com/mamiksik/ParrotInferenceServer)
