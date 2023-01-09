@@ -103,9 +103,9 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
             it.hunks.joinToString { hunk ->
                 hunk.lines.joinToString("\n") { line ->
                     when (line.type) {
-                        PatchLine.Type.CONTEXT -> "<keep> ${line.text}"
+                        PatchLine.Type.CONTEXT -> "<ide> ${line.text}"
                         PatchLine.Type.ADD -> "<add> ${line.text}"
-                        PatchLine.Type.REMOVE -> "<remove> ${line.text}"
+                        PatchLine.Type.REMOVE -> "<del> ${line.text}"
                     }
                 }
             }
