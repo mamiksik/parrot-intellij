@@ -23,6 +23,7 @@ import com.intellij.project.stateStore
 import com.intellij.psi.PsiDocumentManager
 import com.mamiksik.parrot.config.PluginSettingsStateComponent
 import fuel.Fuel
+import fuel.HttpResponse
 import fuel.post
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
@@ -35,7 +36,9 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
     companion object {
         private val notificationManager = NotificationGroupManager.getInstance().getNotificationGroup("mamiksik.parrot.notification");
         private val icon = IconLoader.findIcon("/icons/autocomplet.svg")!!
+        private val json = Json { ignoreUnknownKeys = true }
     }
+
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         val file = parameters.originalFile
         val project = file.project
@@ -50,16 +53,21 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
 
         // Prevent UI freeze
         runWithCheckCanceled({
-            fill(project, document.text, result)
+            fill(project, document.text, parameters.offset, result)
         }, ProgressManager.getInstance().progressIndicator)
     }
 
-    private fun fill(project: Project, partialCommitMessage: String, result: CompletionResultSet) {
+    private fun fill(project: Project, partialCommitMessage: String, caretOffset: Int, result: CompletionResultSet) {
         val patchStrings = getPatchStringPerFile(project)
-        val commitMessage = getMaskedMessage(partialCommitMessage)
+        val commitMessage = getMaskedMessage(partialCommitMessage, caretOffset)
 
         val lookupElements = patchStrings
-            .flatMap { predict(commitMessage + it, project) }
+            .flatMap {
+                when (caretOffset) {
+                    0 -> summarize(it, "Java", project)
+                    else -> fillMasked(commitMessage + it, project)
+                }
+            }
             .map {
                 // Capitalize first letter if the commit message is empty
                 val prediction = if(partialCommitMessage.isEmpty()) {
@@ -80,12 +88,8 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
     }
 
 
-    private fun getMaskedMessage(partialCommitMessage: String): String {
-        return "<msg> " + when {
-            partialCommitMessage.isEmpty() -> "<mask>\n"
-            partialCommitMessage.endsWith(" ") -> "$partialCommitMessage <mask>\n"
-            else -> "$partialCommitMessage<mask>\n"
-        }
+    private fun getMaskedMessage(partialCommitMessage: String, caretOffset: Int): String {
+        return "<msg> ${partialCommitMessage.substring(0, caretOffset)}<mask>${partialCommitMessage.substring(caretOffset)}"
     }
 
     private fun getPatchStringPerFile(project: Project): List<String> {
@@ -112,29 +116,39 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
         }
     }
 
-    private fun predict(patch: String, project: Project): List<Prediction> {
-        val json = Json { ignoreUnknownKeys = true }
-        val apiUrl = PluginSettingsStateComponent.instance.state.inferenceApiUrl
-        val token = PluginSettingsStateComponent.instance.state.inferenceApiToken
-
+    private fun fillMasked(patch: String, project: Project): List<Prediction> {
+        val endpoint = PluginSettingsStateComponent.instance.state.fillTokenEndpoint
         val payload = mapOf("inputs" to patch)
+
+        val response = post(endpoint, payload, project)?: return emptyList()
+        return json.decodeFromString(response.body)
+    }
+
+    private fun summarize(patch: String, language: String, project: Project): List<Prediction>{
+        val endpoint = PluginSettingsStateComponent.instance.state.summarizeEndpoint
+        val payload = mapOf("inputs" to patch, "lang" to language)
+
+        val response = post(endpoint, payload, project)?: return emptyList()
+        return json.decodeFromString(response.body)
+    }
+
+    private fun post(to: String, payload: Map<String, String>, project: Project): HttpResponse? {
+        val token = PluginSettingsStateComponent.instance.state.inferenceApiToken
         val headers = mapOf("Authorization" to "Bearer $token")
 
-        val request = runBlocking {
+        val response = runBlocking {
             try {
-                return@runBlocking Fuel.post(url = apiUrl, body = json.encodeToString(payload), headers = headers)
+                return@runBlocking Fuel.post(url = to, body = json.encodeToString(payload), headers = headers)
             } catch (e: Exception) {
                 createErrorNotification(e.message ?: "", project)
                 return@runBlocking null
             }
-        } ?: return emptyList()
-
-        if (request.statusCode != 200) {
-            createErrorNotification("[${request.statusCode}]\n" + request.body, project)
-            return emptyList()
         }
 
-        return json.decodeFromString(request.body)
+        if (response?.statusCode != 200) {
+            createErrorNotification("[${response?.statusCode}]\n" + response?.body, project)
+        }
+        return response
     }
 
     private fun createErrorNotification(message: String, project: Project) {

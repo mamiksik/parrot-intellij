@@ -8,16 +8,20 @@ import java.awt.FlowLayout
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextField
-import com.intellij.ui.dsl.builder.*
 
 class PluginSettingsPersistentStateConfigurable: Configurable, Configurable.NoScroll, Disposable {
     private val configState
         get() = PluginSettingsStateComponent.instance.state
 
-//    private val state = PluginState()
-    private var inferenceApiUrlField: JTextField?= JTextField().also {
-        it.text = configState.inferenceApiUrl
+
+    private var fillTokenEndpointField: JTextField?= JTextField().also {
+        it.text = configState.fillTokenEndpoint
     }
+
+    private var summarizeEndpointField: JTextField?= JTextField().also {
+        it.text = configState.summarizeEndpoint
+    }
+
     private var inferenceApiTokenField: JTextField? = JTextField().also {
         it.text = configState.inferenceApiToken
     }
@@ -26,32 +30,36 @@ class PluginSettingsPersistentStateConfigurable: Configurable, Configurable.NoSc
 
     override fun createComponent(): JComponent {
         val formPanel = FormBuilder.createFormBuilder()
-            .addLabeledComponent("Inference api URL", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(inferenceApiUrlField) })
-            .addLabeledComponent("Inference api token", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(inferenceApiTokenField) })
+            .addLabeledComponent("Inference api URL", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(fillTokenEndpointField) })
+            .addLabeledComponent("Fill Token api token", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(inferenceApiTokenField) })
+            .addLabeledComponent("Summarize api token", JPanel(FlowLayout(FlowLayout.LEFT)).also { it.add(summarizeEndpointField) })
             .panel
 
         return JPanel(BorderLayout()).also { it.add(formPanel, BorderLayout.NORTH) }
     }
 
     override fun dispose() {
-        inferenceApiUrlField = null
+        fillTokenEndpointField = null
         inferenceApiTokenField = null
     }
 
     override fun isModified(): Boolean {
 
         return configState.inferenceApiToken != inferenceApiTokenField!!.text
-                || configState.inferenceApiUrl != inferenceApiUrlField!!.text
+                || configState.fillTokenEndpoint != fillTokenEndpointField!!.text
+                || configState.summarizeEndpoint != summarizeEndpointField!!.text
     }
 
     override fun apply() {
-        configState.inferenceApiUrl = inferenceApiUrlField!!.text
+        configState.fillTokenEndpoint = fillTokenEndpointField!!.text
+        configState.summarizeEndpoint = summarizeEndpointField!!.text
         configState.inferenceApiToken = inferenceApiTokenField!!.text
     }
 
 
     override fun reset() {
-        inferenceApiUrlField!!.text = configState.inferenceApiUrl
+        fillTokenEndpointField!!.text = configState.fillTokenEndpoint
+        summarizeEndpointField!!.text = configState.summarizeEndpoint
         inferenceApiTokenField!!.text = configState.inferenceApiToken
     }
 }
