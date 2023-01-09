@@ -96,7 +96,8 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
         }
 
         val basePath = project.stateStore.projectBasePath
-        val patches = IdeaTextPatchBuilder.buildPatch(project, changes, basePath, false, true) as List<TextFilePatch>
+        val patches = IdeaTextPatchBuilder.buildPatch(project, changes, basePath, false, true)
+            .filterIsInstance<TextFilePatch>()
 
         return patches.map {
             it.hunks.joinToString { hunk ->
