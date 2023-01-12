@@ -87,7 +87,6 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
         result.addAllElements(lookupElements)
     }
 
-
     private fun getMaskedMessage(partialCommitMessage: String, caretOffset: Int): String {
         return "<msg> ${partialCommitMessage.substring(0, caretOffset)}<mask>${partialCommitMessage.substring(caretOffset)}"
     }
