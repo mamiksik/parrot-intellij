@@ -10,10 +10,17 @@ Welcome to Parrot, the AI autocomplete plugin for commit messages! With Parrot, 
 
 ![](images/autocomplet-preview.png)
 
-#### See also:
- - 🤖 [Parrot CodeBerta Model](https://huggingface.co/mamiksik/CommitPredictor)
- - 💿 [Parrot Dataset](https://huggingface.co/datasets/mamiksik/CommitDiffs)
- - 🚀 [Parrot Inference Server](https://github.com/mamiksik/ParrotInferenceServer)
+### 🔌 Plugins for IDEs
++ [Parrot for IntellJ](https://github.com/mamiksik/parrot-intellij)
++ [Parrot for VSCode](https://github.com/mamiksik/parrot-vscode)
+
+### 🦾 Trained Models
++ [Parrot commit generation Model](https://huggingface.co/mamiksik/CommitPredictorT5PL)
++ [Parrot autocomplete model](https://huggingface.co/mamiksik/CodeBERTa-commit-message-autocomplete)
+
+### 📚 Others
+- [Parrot Dataset](https://huggingface.co/datasets/mamiksik/processed-commit-diffs)
+- [Parrot Inference Server](https://github.com/mamiksik/ParrotInferenceServer)
 
 ### Usage
 To use Parrot, simply start typing your commit message as usual. When you want to get a suggestion for the next word, use the autocomplete shortcut (typically Ctrl + Space or Cmd + Space). Parrot will then generate a list of suggestions based on the words you have already typed. You can select the suggestion you want to use and it will be automatically inserted into your message.
