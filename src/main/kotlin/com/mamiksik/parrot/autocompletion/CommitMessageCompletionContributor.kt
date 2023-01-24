@@ -14,7 +14,6 @@ import com.intellij.openapi.diff.impl.patch.PatchLine
 import com.intellij.openapi.diff.impl.patch.TextFilePatch
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.vcs.changes.ChangeListChange
 import com.intellij.openapi.vcs.changes.ChangeListManager
 import com.intellij.openapi.vcs.ui.CommitMessage
@@ -22,6 +21,7 @@ import com.intellij.patterns.StandardPatterns
 import com.intellij.project.stateStore
 import com.intellij.psi.PsiDocumentManager
 import com.mamiksik.parrot.config.PluginSettingsStateComponent
+import com.mamiksik.parrot.misc.Icons
 import fuel.Fuel
 import fuel.HttpResponse
 import fuel.post
@@ -35,7 +35,6 @@ import kotlinx.serialization.encodeToString
 internal class CommitMessageCompletionContributor: CompletionContributor() {
     companion object {
         private val notificationManager = NotificationGroupManager.getInstance().getNotificationGroup("mamiksik.parrot.notification");
-        private val icon = IconLoader.findIcon("/icons/autocomplet.svg")!!
         private val json = Json { ignoreUnknownKeys = true }
     }
 
@@ -74,14 +73,16 @@ internal class CommitMessageCompletionContributor: CompletionContributor() {
                     it.prediction.replaceFirstChar { x -> x.uppercaseChar() }
                 } else {it.prediction}
 
+                val scoreStr = if (it.score > 0) """${"%.2f".format(it.score * 100)}%""" else null
                 val element = LookupElementBuilder
                     .create(prediction.trim())
-                    .withIcon(icon)
+                    .withIcon(Icons.AutoComplete)
                     .withCaseSensitivity(false)
-                    .withTypeText("""${"%.2f".format(it.score * 100)}%""")
+                    .withTypeText(scoreStr)
                     .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
 
-                PrioritizedLookupElement.withPriority(element, it.score)
+                val score = if (it.score > 0) it.score else 100.0
+                PrioritizedLookupElement.withPriority(element, score)
             }
 
         result.addAllElements(lookupElements)

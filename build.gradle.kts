@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.7.0"
+    id("org.jetbrains.intellij") version "1.11.0"
     id("co.uzzu.dotenv.gradle") version "2.0.0"
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.serialization") version "1.7.20"
@@ -14,7 +14,7 @@ dependencies {
 }
 
 group = "com.mamiksik"
-version = "1.2.7-SNAPSHOT"
+version = "1.2.8-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -31,8 +31,8 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2021.3")
-    type.set("IC") // Target IDE Platform
+    version.set("2022.2")
+    type.set("PY") // Target IDE Platform
 
     plugins.set(listOf("git4idea"))
 }
@@ -59,7 +59,7 @@ tasks {
     }
 
     publishPlugin {
-        channels.set(listOf("beta"))
+//        channels.set(listOf("beta"))
         token.set(env.JETBRAINS_API_TOKEN.value)
     }
 
